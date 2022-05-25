@@ -1,0 +1,18 @@
+.app {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+.heros-container {
+  display: flex;
+  justify-content: center;
+  gap: inherit;
+  flex-wrap: wrap;
+}
+
+.controls {
+  display: flex;
+  gap: inherit;
+}
