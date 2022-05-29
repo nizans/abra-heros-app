@@ -1,6 +1,6 @@
-import { camelCase, startCase } from "lodash";
-import React, { useState } from "react";
-import "./HeroCard.css";
+import { camelCase, startCase } from 'lodash';
+import React, { useState } from 'react';
+import './HeroCard.css';
 
 const HeroCard = ({ image, name, appearance, id }) => {
   const [isFav, setIsFav] = useState(Boolean(localStorage.getItem(id)));
@@ -34,7 +34,7 @@ const HeroCard = ({ image, name, appearance, id }) => {
         })}
       </div>
       <button onClick={handleSaveToFavorites}>
-        {isFav ? "Remove" : "Add"}
+        {isFav ? 'Remove' : 'Add'}
       </button>
     </div>
   );
