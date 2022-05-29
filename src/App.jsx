@@ -1,31 +1,10 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import "./App.css";
 import Controls from "./components/Controls";
 import HeroContainer from "./components/HeroContainer";
+import useFetchData, { StatusState } from "./hooks/useFetchData";
 
 const BASE_URL = "https://abra-training.herokuapp.com/api/all-heros";
-
-const useFetchData = (url) => {
-  const [data, setData] = useState(null);
-  const [status, setStatus] = useState("idle");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setStatus("loading");
-        const res = await fetch(url);
-        const json = await res.json();
-        setData(json);
-        setStatus("success");
-      } catch (error) {
-        console.error(error);
-        setStatus("error");
-      }
-    };
-    fetchData();
-  }, [url]);
-  return { data, status };
-};
 
 function App() {
   const { data, status } = useFetchData(BASE_URL);
@@ -51,13 +30,18 @@ function App() {
     setEyeColor(e.target.value);
   };
 
-  if (status === "loading") return "loading";
-  if (status === "error") return "error";
-  if (status === "idle") return "idle";
-  const eyeColors = [...new Set(data.map((hero) => hero.appearance.eyeColor))];
+  const eyeColors = useMemo(
+    () =>
+      data ? [...new Set(data.map((hero) => hero.appearance.eyeColor))] : [],
+    [data]
+  );
+
+  if (status === StatusState.loading) return StatusState.loading;
+  if (status === StatusState.error) return StatusState.error;
+  if (status === StatusState.idle) return StatusState.idle;
 
   return (
-    status === "success" && (
+    status === StatusState.success && (
       <div className="app">
         <Controls
           gender={gender}

@@ -5,7 +5,7 @@ import "./HeroCard.css";
 const HeroCard = ({ image, name, appearance, id }) => {
   const [isFav, setIsFav] = useState(Boolean(localStorage.getItem(id)));
 
-  const handleSaveToFavorites = () => {
+  const toggleFavorite = () => {
     if (isFav) {
       localStorage.removeItem(id);
       setIsFav(false);
@@ -33,7 +33,7 @@ const HeroCard = ({ image, name, appearance, id }) => {
           );
         })}
       </div>
-      <button onClick={handleSaveToFavorites}>
+      <button onClick={toggleFavorite}>
         {isFav ? "Remove" : "Add"}
       </button>
     </div>

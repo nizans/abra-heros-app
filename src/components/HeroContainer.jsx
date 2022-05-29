@@ -6,6 +6,7 @@ const HeroContainer = ({ data, search, minHeight, gender, eyeColor }) => {
 
   const filteredData = useMemo(() => {
     let filtered = data;
+
     if (minHeight > 0)
       filtered = filtered.filter(
         (hero) => getCM(hero.appearance.height) >= minHeight
