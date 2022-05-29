@@ -1,25 +1,24 @@
-import { useEffect, useState } from "react";
-import "./App.css";
-import Controls from "./components/Controls";
-import HeroContainer from "./components/HeroContainer";
+import { useEffect, useState } from 'react';
+import HeroCard from './HeroCard';
+import './App.css';
 
-const BASE_URL = "https://abra-training.herokuapp.com/api/all-heros";
+const BASE_URL = 'https://abra-training.herokuapp.com/api/all-heros';
 
 const useFetchData = (url) => {
   const [data, setData] = useState(null);
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState('idle');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setStatus("loading");
+        setStatus('loading');
         const res = await fetch(url);
         const json = await res.json();
         setData(json);
-        setStatus("success");
+        setStatus('success');
       } catch (error) {
         console.error(error);
-        setStatus("error");
+        setStatus('error');
       }
     };
     fetchData();
@@ -29,12 +28,11 @@ const useFetchData = (url) => {
 
 function App() {
   const { data, status } = useFetchData(BASE_URL);
-  const [gender, setGender] = useState("both");
-  const [search, setSearch] = useState("");
-  const [minHeight, setMinHeight] = useState(0);
-  const [eyeColor, setEyeColor] = useState();
+  const [gender, setGender] = useState('both');
+  const [search, setSearch] = useState('');
 
   const handleGenderChange = (e) => {
+    console.log(e.target.value);
     setGender(e.target.value);
   };
 
@@ -42,41 +40,46 @@ function App() {
     setSearch(e.target.value);
   };
 
-  const handleHeightChange = (e) => {
-    if (e.target.value < 0) return;
-    setMinHeight(e.target.value);
-  };
-
-  const handleEyeColorChange = (e) => {
-    setEyeColor(e.target.value);
-  };
-
-  if (status === "loading") return "loading";
-  if (status === "error") return "error";
-  if (status === "idle") return "idle";
-  const eyeColors = [...new Set(data.map((hero) => hero.appearance.eyeColor))];
+  if (status === 'loading') return 'loading';
+  if (status === 'error') return 'error';
 
   return (
-    status === "success" && (
+    status === 'success' && (
       <div className="app">
-        <Controls
-          gender={gender}
-          handleGenderChange={handleGenderChange}
-          search={search}
-          handleSearch={handleSearch}
-          minHeight={minHeight}
-          handleHeightChange={handleHeightChange}
-          eyeColors={eyeColors}
-          eyeColor={eyeColor}
-          handleEyeColorChange={handleEyeColorChange}
-        />
-        <HeroContainer
-          data={data}
-          search={search}
-          gender={gender}
-          minHeight={minHeight}
-          eyeColor={eyeColor}
-        />
+        <div className="controls">
+          <label>
+            <select value={gender} onChange={handleGenderChange}>
+              <option value="both">Both</option>
+              <option value="male">Male</option>
+              <option value="female"> Female</option>
+            </select>
+          </label>
+          <label>
+            Search:{' '}
+            <input
+              value={search}
+              onChange={handleSearch}
+              placeholder="Enter hero name"
+              type="text"
+            />
+          </label>
+        </div>
+
+        <div className="heros-container">
+          {data
+            .filter((hero) =>
+              hero.name.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((hero) => (
+              <HeroCard
+                key={hero.id}
+                appearance={hero.appearance}
+                name={hero.name}
+                image={hero.images.lg}
+                id={hero.id}
+              />
+            ))}
+        </div>
       </div>
     )
   );
