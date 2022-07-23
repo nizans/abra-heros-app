@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 import HeroCard from "./HeroCard";
-
-const LOCAL_STORAGE_FAVS_KEY = "FAVS_IDS";
+import { LOCAL_STORAGE_FAVS_KEY } from "../utils/constants";
 
 const HeroContainer = ({ data, search, minHeight, gender, eyeColor }) => {
   const getCM = (str) => parseInt(str.split(" ")[0]);

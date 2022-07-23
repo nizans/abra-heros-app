@@ -106,6 +106,7 @@ const SearchResultPopOver = ({ data, onItemClick, show, searchValue }) => {
       className="pop-over"
       style={{
         opacity: show ? 1 : 0,
+        pointerEvents: show ? "auto" : "none",
       }}
     >
       <ul>

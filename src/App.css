@@ -8,13 +8,13 @@
 .heros-container {
   display: flex;
   justify-content: center;
-  gap: inherit;
+  gap: 15px;
   flex-wrap: wrap;
 }
 
 .controls {
   display: flex;
-  gap: inherit;
+  gap: 15px;
 }
 
 body {
