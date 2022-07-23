@@ -16,3 +16,32 @@
   display: flex;
   gap: inherit;
 }
+
+body {
+  margin: 0;
+  background-color: white;
+}
+
+* {
+  --color-0: #d6cfcb;
+  --color-1: #ccb7ae;
+  --color-2: #706677;
+  --color-3: #a6808c;
+  --color-4: #565264;
+  font-family: "Roboto", sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-1) whitesmoke;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: whitesmoke;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-1);
+  border-radius: 8px;
+}

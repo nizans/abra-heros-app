@@ -1,0 +1,30 @@
+.header {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background-color: var(--color-3);
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.193);
+}
+
+nav {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-0);
+
+  font-size: 1.5rem;
+}
+
+.active {
+  color: white;
+  font-weight: bold;
+}

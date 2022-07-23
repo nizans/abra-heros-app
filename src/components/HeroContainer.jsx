@@ -1,8 +1,12 @@
 import React, { useMemo } from "react";
+import useLocalStorage from "../hooks/useLocalStorage";
 import HeroCard from "./HeroCard";
+
+const LOCAL_STORAGE_FAVS_KEY = "FAVS_IDS";
 
 const HeroContainer = ({ data, search, minHeight, gender, eyeColor }) => {
   const getCM = (str) => parseInt(str.split(" ")[0]);
+  const [favorites, setFavorites] = useLocalStorage(LOCAL_STORAGE_FAVS_KEY, []);
 
   const filteredData = useMemo(() => {
     let filtered = data;
@@ -33,16 +37,25 @@ const HeroContainer = ({ data, search, minHeight, gender, eyeColor }) => {
 
   const mappedData = useMemo(
     () =>
-      filteredData.map((hero) => (
-        <HeroCard
-          key={hero.id}
-          appearance={hero.appearance}
-          name={hero.name}
-          image={hero.images.lg}
-          id={hero.id}
-        />
-      )),
-    [filteredData]
+      filteredData.map((hero) => {
+        const isFav = favorites.some((id) => id === hero.id);
+        const handleRemoveFav = () =>
+          setFavorites((prev) => prev.filter((id) => id !== hero.id));
+        const handleAddFav = () => setFavorites((prev) => [...prev, hero.id]);
+        const handler = isFav ? handleRemoveFav : handleAddFav;
+        return (
+          <HeroCard
+            isFav={isFav}
+            handleFavClick={handler}
+            key={hero.id}
+            appearance={hero.appearance}
+            name={hero.name}
+            image={hero.images.lg}
+            id={hero.id}
+          />
+        );
+      }),
+    [favorites, filteredData, setFavorites]
   );
 
   return <div className="heros-container">{mappedData}</div>;
