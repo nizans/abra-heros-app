@@ -1,58 +1,8 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { useRef } from "react";
+import { BASE_URL } from "../utils/constants";
+import { Loader } from "./Loader";
 import "./SearchInput.css";
-const mockResult = [
-  {
-    name: "A-Bomb",
-    id: 1,
-    img: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/xs/1-a-bomb.jpg",
-  },
-  {
-    name: "Abe Sapien",
-    id: 2,
-    img: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/xs/2-abe-sapien.jpg",
-  },
-  {
-    name: "Abin Sur",
-    id: 3,
-    img: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/xs/3-abin-sur.jpg",
-  },
-  {
-    name: "Abomination",
-    id: 4,
-    img: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/xs/4-abomination.jpg",
-  },
-  {
-    name: "Abraxas",
-    id: 5,
-    img: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/xs/5-abraxas.jpg",
-  },
-  {
-    name: "Absorbing Man",
-    id: 6,
-    img: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/xs/6-absorbing-man.jpg",
-  },
-  {
-    name: "Adam Monroe",
-    id: 7,
-    img: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/xs/7-adam-monroe.jpg",
-  },
-  {
-    name: "Adam Strange",
-    id: 8,
-    img: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/xs/8-adam-strange.jpg",
-  },
-  {
-    name: "Agent Bob",
-    id: 10,
-    img: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/xs/10-agent-bob.jpg",
-  },
-  {
-    name: "Agent Zero",
-    id: 11,
-    img: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/xs/11-agent-zero.jpg",
-  },
-];
 
 const TextHightlighter = ({
   text,
@@ -96,7 +46,13 @@ const HeroSearchItem = ({ heroAutocompleteDetails, searchValue }) => {
   );
 };
 
-const SearchResultPopOver = ({ data, onItemClick, show, searchValue }) => {
+const SearchResultPopOver = ({
+  data,
+  onItemClick,
+  show,
+  searchValue,
+  isLoading,
+}) => {
   const handleClick = (id) => {
     if (onItemClick) onItemClick(id);
   };
@@ -109,24 +65,38 @@ const SearchResultPopOver = ({ data, onItemClick, show, searchValue }) => {
         pointerEvents: show ? "auto" : "none",
       }}
     >
-      <ul>
-        {data.map((hero) => (
-          <li key={hero.id} onClick={() => handleClick(hero.id)}>
-            <HeroSearchItem
-              searchValue={searchValue}
-              heroAutocompleteDetails={hero}
-            />
-          </li>
-        ))}
-      </ul>
+      {isLoading && <Loader />}
+      {!isLoading && data && data.length === 0 && (
+        <div className="no-results-text">Nothing found 😶</div>
+      )}
+      {data && data.length > 0 && (
+        <ul>
+          {data.map((hero) => (
+            <li key={hero.id} onClick={() => handleClick(hero.id)}>
+              <HeroSearchItem
+                searchValue={searchValue}
+                heroAutocompleteDetails={hero}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
+};
+
+const fetchAutocompleteResults = async (q, limit = 10) => {
+  const res = await fetch(BASE_URL + `autocomplete?q=${q}&limit=${limit}`);
+  if (!res.ok) throw Error("Network error");
+  return res.json();
 };
 
 const SearchInput = () => {
   const [search, setSearch] = React.useState("");
   const [isFocused, setIsFocused] = React.useState(false);
-
+  const { data, isLoading } = useQuery(["Autocomplete", search], () =>
+    fetchAutocompleteResults(search)
+  );
   const handleChange = (e) => {
     setSearch(e.target.value);
   };
@@ -140,7 +110,8 @@ const SearchInput = () => {
         className="search-input"
       />
       <SearchResultPopOver
-        data={mockResult}
+        isLoading={isLoading}
+        data={data || []}
         show={!!search && isFocused}
         searchValue={search}
       />

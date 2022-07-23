@@ -38,7 +38,7 @@ const AllHeroes = () => {
     setEyeColor(e.target.value);
   };
 
-  if (true) return <Loader />;
+  if (status === "loading") return <Loader />;
   if (status === "error") return "error";
   if (status === "idle") return "idle";
   const eyeColors = [...new Set(data.map((hero) => hero.appearance.eyeColor))];

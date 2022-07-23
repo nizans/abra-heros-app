@@ -20,6 +20,7 @@
   border-bottom-left-radius: 16px;
   transition: opacity 0.2s linear;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.431);
+  min-height: 332px;
 }
 
 ul {
@@ -43,7 +44,7 @@ ul li {
 
 .hero-search-item {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   gap: 16px;
   padding: 8px;
@@ -59,4 +60,11 @@ ul li {
 .highlight {
   font-weight: bold;
   color: var(--color-4);
+}
+
+.no-results-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
 }

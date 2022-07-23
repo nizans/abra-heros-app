@@ -22,7 +22,9 @@ const Favorites = () => {
     }),
   });
 
-  const handleRemoveFavorite = () => {};
+  const handleRemoveFavorite = (id) => {
+    setFavorites(favorites.filter((_id) => _id !== id));
+  };
 
   return (
     <div className="heros-container">
@@ -32,7 +34,7 @@ const Favorites = () => {
             <HeroCard
               key={i}
               isFav
-              handleFavClick={handleRemoveFavorite}
+              handleFavClick={() => handleRemoveFavorite(data.id)}
               appearance={data?.appearance}
               name={data?.name}
               image={data?.images.lg}
