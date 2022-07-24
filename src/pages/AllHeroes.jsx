@@ -1,11 +1,25 @@
+import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import useFetchData from "../hooks/useFetchData";
+import { BASE_URL } from "../App";
 import Controls from "../components/Controls";
 import HeroContainer from "../components/HeroContainer";
-import { BASE_URL } from "../App";
+
+const fetchAll = async (queryContext) => {
+  const res = await fetch(BASE_URL + "all-heroes");
+  const data = await res.json();
+  return data;
+};
 
 const AllHeroes = () => {
-  const { data, status } = useFetchData(BASE_URL + "all-heros");
+  const { data, isLoading, isError, isSuccess, error } = useQuery(
+    ["all-heroes"],
+    fetchAll,
+    {
+      cacheTime: Infinity,
+      staleTime: Infinity,
+    }
+  );
+
   const [gender, setGender] = useState("both");
   const [search, setSearch] = useState("");
   const [minHeight, setMinHeight] = useState(0);
@@ -28,13 +42,13 @@ const AllHeroes = () => {
     setEyeColor(e.target.value);
   };
 
-  if (status === "loading") return "loading";
-  if (status === "error") return "error";
-  if (status === "idle") return "idle";
+  if (isLoading) return "loading";
+  if (isError) return error.message;
+
   const eyeColors = [...new Set(data.map((hero) => hero.appearance.eyeColor))];
 
   return (
-    status === "success" && (
+    isSuccess && (
       <div className="app">
         <Controls
           gender={gender}

@@ -43,7 +43,7 @@ ul li {
 
 .hero-search-item {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   gap: 16px;
   padding: 8px;

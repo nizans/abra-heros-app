@@ -1,5 +1,4 @@
 import React from "react";
-import { useRef } from "react";
 import "./SearchInput.css";
 const mockResult = [
   {
@@ -106,6 +105,7 @@ const SearchResultPopOver = ({ data, onItemClick, show, searchValue }) => {
       className="pop-over"
       style={{
         opacity: show ? 1 : 0,
+        pointerEvents: show ? "auto" : "none",
       }}
     >
       <ul>
