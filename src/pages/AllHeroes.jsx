@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { BASE_URL } from "../App";
+import { BASE_URL } from "../utils/constants";
 import Controls from "../components/Controls";
 import HeroContainer from "../components/HeroContainer";
 

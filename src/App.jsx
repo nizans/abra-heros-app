@@ -3,7 +3,6 @@ import { Routes, Route, Outlet } from "react-router-dom";
 import AllHeroes from "./pages/AllHeroes";
 import Favorites from "./pages/Favorites";
 import Header from "./components/Header";
-export const BASE_URL = "https://abra-training.herokuapp.com/api/";
 
 function Main() {
   return (
