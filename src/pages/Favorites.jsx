@@ -3,6 +3,7 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import { BASE_URL, LOCAL_STORAGE_FAVS_KEY } from "../utils/constants";
 import { useQueries } from "@tanstack/react-query";
 import HeroCard from "../components/HeroCard";
+
 const fetchHero = async (id) => {
   const res = await fetch(BASE_URL + "hero/" + id);
   if (!res.ok) {
@@ -13,11 +14,12 @@ const fetchHero = async (id) => {
 
 const Favorites = () => {
   const [favorites, setFavorites] = useLocalStorage(LOCAL_STORAGE_FAVS_KEY, []);
-  const userQueries = useQueries({
+  const favoritesQueries = useQueries({
     queries: favorites.map((id) => {
       return {
         queryKey: ["favorite", id],
         queryFn: () => fetchHero(id),
+        refetchInterval: parseInt(id) % 3 === 0 ? 3000 : 0,
       };
     }),
   });
@@ -28,7 +30,7 @@ const Favorites = () => {
 
   return (
     <div className="heros-container">
-      {userQueries.map(
+      {favoritesQueries.map(
         ({ data, isLoading, isError, fetchStatus, refetch }, i) => {
           return (
             <HeroCard
