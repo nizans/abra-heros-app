@@ -15,7 +15,9 @@ const fetchAllHeroes = async () => {
 };
 
 const AllHeroes = () => {
-  const { data, status } = useQuery(["ALL_HEROES"], fetchAllHeroes);
+  const { data, status } = useQuery(["ALL_HEROES"], fetchAllHeroes, {
+    staleTime: Infinity,
+  });
   const [gender, setGender] = useState("both");
   const [search, setSearch] = useState("");
   const [minHeight, setMinHeight] = useState(0);

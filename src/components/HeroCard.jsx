@@ -1,7 +1,17 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { camelCase, startCase } from "lodash";
 import React from "react";
+import { BASE_URL } from "../utils/constants";
 import "./HeroCard.css";
 import { Loader } from "./Loader";
+
+const deleteHero = async (id) => {
+  const res = await fetch(BASE_URL + "hero/" + id, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw Error("requst failed");
+  return await res.json();
+};
 
 const HeroCard = ({
   image,
@@ -15,7 +25,28 @@ const HeroCard = ({
   error,
   fetchStatus,
   refetch,
+  id,
 }) => {
+  const client = useQueryClient();
+  const { mutate, isLoading: isMutating } = useMutation({
+    mutationFn: deleteHero,
+    mutationKey: ["DELETE", id],
+    onMutate: () => {
+      const heroToDelete = client
+        .getQueryData(["ALL_HEROES"])
+        .find((hero) => hero.id);
+      client.setQueryData(["ALL_HEROES"], (prev) =>
+        prev.filter((hero) => hero.id !== id)
+      );
+      return { heroToDelete };
+    },
+    onError: (error, varibales, context) => {
+      const { heroToDelete } = context;
+      client.setQueryData(["ALL_HEROES"], (prev) => [heroToDelete, ...prev]);
+    },
+    onSettled: () => {},
+  });
+
   if (isLoading)
     return (
       <div className="container">
@@ -26,6 +57,10 @@ const HeroCard = ({
     return (
       <div className="container">Oops somthing went wrong, cant get data</div>
     );
+
+  const handleDelete = () => {
+    mutate(id);
+  };
 
   return (
     <div className="container">
@@ -64,6 +99,9 @@ const HeroCard = ({
       <div>
         <button onClick={handleFavClick}>{isFav ? "Remove" : "Add"}</button>
         {refetch && <button onClick={refetch}>Refresh</button>}
+        <button disabled={isMutating} onClick={handleDelete}>
+          {"DELETE FROM SERVER"}
+        </button>
       </div>
       {fetchStatus && (
         <span className="fetch-status">

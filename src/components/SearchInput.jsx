@@ -1,8 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { BASE_URL } from "../utils/constants";
 import { Loader } from "./Loader";
 import "./SearchInput.css";
+import useDebounce from "./useDebounce";
 
 const TextHightlighter = ({
   text,
@@ -93,13 +94,28 @@ const fetchAutocompleteResults = async (q, limit = 10) => {
 
 const SearchInput = () => {
   const [search, setSearch] = React.useState("");
+  const debouncedSearch = useDebounce(search, 3000);
   const [isFocused, setIsFocused] = React.useState(false);
-  const { data, isLoading } = useQuery(["Autocomplete", search], () =>
-    fetchAutocompleteResults(search)
+  const client = useQueryClient();
+
+  const result = client.getQueryData(["Autocomplete", search], { exact: true });
+
+  const { data, isLoading } = useQuery(
+    ["Autocomplete", result ? search : debouncedSearch],
+    () => fetchAutocompleteResults(result ? search : debouncedSearch),
+    {
+      enabled: !!search,
+      cacheTime: Infinity,
+      staleTime: Infinity,
+    }
   );
+  console.log(data);
+
   const handleChange = (e) => {
     setSearch(e.target.value);
   };
+  
+
   return (
     <div className="search-input-wrapper">
       <input
@@ -111,7 +127,7 @@ const SearchInput = () => {
       />
       <SearchResultPopOver
         isLoading={isLoading}
-        data={data || []}
+        data={result || data || []}
         show={!!search && isFocused}
         searchValue={search}
       />
