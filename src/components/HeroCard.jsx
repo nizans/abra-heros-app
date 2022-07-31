@@ -69,6 +69,7 @@ const HeroCard = ({
       </div>
       <div className="hero-info">
         <h3>{name}</h3>
+        <span>{id}</span>
         {Object.entries(appearance).map((keyVal, i) => {
           return (
             <div key={i}>
